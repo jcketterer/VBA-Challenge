@@ -1,71 +1,83 @@
 Attribute VB_Name = "Module1"
 Sub stockmarket():
 
-'creating and setting variables
-    Dim totalStockVolume As Double
-    Dim inforow As Long
-    Dim opening As Double
+         
+'Loop through all worksheets
+
+    For Each ws In Worksheets
     
+    'setting variable to hold ticker name and last row
+        Dim worksheetname As String
+             
         
+    'Grab Worksheet
+        worksheetname = ws.Name
+        
+    'Adding ticker to first column header
+        ws.Cells(1, 9).Value = "Ticker"
+        ws.Cells(1, 10).Value = "Yearly Change"
+        ws.Cells(1, 11).Value = "Percent Change"
+        ws.Cells(1, 12).Value = "Total Stock Volume"
+        
+    'creating and setting variables with worksheet loop
+    Dim totalStockVolume As Double
+    Dim inforow As Double
+    Dim opening As Double
+
     totalStockVolume = 0
     inforow = 2
     opening = 0
-    
-'set column values to hold names
+       
+    'Determine Last row throughout all worksheets
+    lastrow = ws.Cells(Rows.Count, 2).End(xlUp).Row
 
-    Cells(1, 9).Value = "Ticker"
-    Cells(1, 10).Value = "Yearly Change"
-    Cells(1, 11).Value = "Percent Change"
-    Cells(1, 12).Value = "Total Stock Volume"
-
-'set varibales to capture the entire row
-
-    lastrow = Cells(Rows.Count, 2).End(xlUp).Row
-    
-'For loop to iterate through entire row
-
+    'set loop
     For rownum = 2 To lastrow
-        
-        totalStockVolume = totalStockVolume + Cells(rownum, 7).Value
-        
-        If Cells(rownum, 2).Value = 20160101 Then
-            opening = Cells(rownum, 3).Value
-      
-        End If
     
-        If Cells(rownum + 1, 1).Value <> Cells(rownum, 1).Value Then
+    'Determining Stock Value Total and tickers
+    totalStockVolume = totalStockVolume + ws.Cells(rownum, 7).Value
         
-            Cells(inforow, 9).Value = Cells(rownum, 1).Value
-            Cells(inforow, 12).Value = totalStockVolume
+    'If statement to consolidate tickers and total values
+    If ws.Cells(rownum, 2).Value = ws.Cells(inforow, 2) Then
+            opening = ws.Cells(rownum, 3).Value
             
-            ' yearly change
-                Cells(inforow, 10).Value = (Cells(rownum, 3).Value - opening)
+    End If
+        
+        'If statement to add tickets and add totals
+         If ws.Cells(rownum + 1, 1).Value <> ws.Cells(rownum, 1).Value Then
+        
+            ws.Cells(inforow, 9).Value = ws.Cells(rownum, 1).Value
+            ws.Cells(inforow, 12).Value = totalStockVolume
             
-            ' Percent Change
-                Cells(inforow, 11).Value = (Cells(rownum, 3).Value - opening) / opening
-                Cells(inforow, 11).Value = Cells(inforow, 11).Value * 1
-                Cells(inforow, 11).NumberFormat = "0.00%"
+        ' yearly change
+            ws.Cells(inforow, 10).Value = (ws.Cells(rownum, 3).Value - opening)
+                        
+        ' Percent Change
+            ws.Cells(inforow, 11).Value = (ws.Cells(rownum, 3).Value - opening) / opening
+            ws.Cells(inforow, 11).Value = ws.Cells(inforow, 11).Value * 1
+            ws.Cells(inforow, 11).NumberFormat = "0.00%"
+                       
             
-            ' Color Formatting
-                If Cells(inforow, 10).Value < 0 Then
+        
+         ' Color Formatting
+                If ws.Cells(inforow, 10).Value < 0 Then
                 
-                    Cells(inforow, 10).Interior.ColorIndex = 3
+                    ws.Cells(inforow, 10).Interior.ColorIndex = 3
                     
                 Else
                 
-                    Cells(inforow, 10).Interior.ColorIndex = 4
+                    ws.Cells(inforow, 10).Interior.ColorIndex = 4
                     
                 End If
-                                
-            
+                
             totalStockVolume = 0
             inforow = inforow + 1
-            
-
-            
-
+                        
         End If
+    
     Next rownum
+       
+    Next ws
     
 
 End Sub
