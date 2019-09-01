@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "Module11"
 Sub stockmarket():
 
          
@@ -49,6 +49,12 @@ Sub stockmarket():
     'set loop
     For rownum = 2 To lastrow
     
+    'Setting if statement to check for value's of 0
+    
+    If ws.Cells(rownum, 3).Value = 0 Then
+    Else
+    
+    
     'Determining Stock Value Total and tickers
     totalStockVolume = totalStockVolume + ws.Cells(rownum, 7).Value
         
@@ -73,6 +79,18 @@ Sub stockmarket():
             
          End If
                      
+         
+                    
+        ' yearly change
+            ws.Cells(inforow, 10).Value = (ws.Cells(rownum, 3).Value - opening)
+                        
+        ' Percent Change
+            ws.Cells(inforow, 11).Value = (ws.Cells(rownum, 3).Value - opening) / opening
+            ws.Cells(inforow, 11).Value = ws.Cells(inforow, 11).Value * 1
+            ws.Cells(inforow, 11).NumberFormat = "0.00%"
+            
+        'Percent Value BONUS
+        
          If greatestPercentIncrease < ws.Cells(inforow, 11).Value Then
             greatestPercentIncrease = ws.Cells(inforow, 11).Value
             
@@ -85,16 +103,6 @@ Sub stockmarket():
             
             DecTicker = ws.Cells(rownum, 1).Value
          End If
-                    
-        ' yearly change
-            ws.Cells(inforow, 10).Value = (ws.Cells(rownum, 3).Value - opening)
-                        
-        ' Percent Change
-            ws.Cells(inforow, 11).Value = (ws.Cells(rownum, 3).Value - opening) / opening
-            ws.Cells(inforow, 11).Value = ws.Cells(inforow, 11).Value * 1
-            ws.Cells(inforow, 11).NumberFormat = "0.00%"
-                       
-            
         
          ' Color Formatting
                 If ws.Cells(inforow, 10).Value < 0 Then
@@ -110,8 +118,9 @@ Sub stockmarket():
             totalStockVolume = 0
             inforow = inforow + 1
                         
+            End If
         End If
-    
+                
     Next rownum
        
     ws.Cells(4, 16).Value = greatestStockVol
@@ -120,8 +129,7 @@ Sub stockmarket():
     ws.Cells(3, 16).Value = greatestPercentDecrease
     ws.Cells(3, 15).Value = DecTicker
     ws.Cells(3, 16).NumberFormat = "0.00%"
-    
-        
+            
     ws.Cells(2, 16).Value = greatestPercentIncrease
     ws.Cells(2, 15).Value = IncTicker
     ws.Cells(2, 16).NumberFormat = "0.00%"
